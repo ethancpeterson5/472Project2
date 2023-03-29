@@ -1,17 +1,31 @@
 def getMoves(currentBoard, move):
     moves = []
-    for i in range(len(currentBoard)):
-        for j in range(len(currentBoard[0])):
-            if(currentBoard[i][j] != 'L' or currentBoard[i][j] != 'D'):
-                if(i >= 2):
-                    if(currentBoard[i-2][j] == move):
-                        moves.append([i-2,j])
-                if(i <= 5):
-                    if(currentBoard[i+2][j] == move):
-                        moves.append([i+2,j])
-                if (j >= 2):
-                    if (currentBoard[i][j - 2] == move):
-                        moves.append([i, j - 2])
-                if (j <= 5):
-                    if (currentBoard[i][j + 2] == move):
-                        moves.append([i, j + 2])
+    for i in range(8):
+        for j in range(8):
+            if currentBoard[i][j] == '_':
+                if checkIfMoveCaptures(currentBoard, i,j,move):
+                    moves.append([i,j])
+    return moves
+
+def checkIfMoveCaptures(currentBoard, i, j, move):
+    captured = False
+    if move == 'L':
+        oppositeMove = 'R'
+    else:
+        oppositeMove = 'L'
+    for changeInI in range(-1,2):
+        for changeInJ in range(-1,2):
+            if changeInI == 0 and changeInJ == 0:
+                continue
+            row = i + changeInI
+            col = j + changeInJ
+            while 0 <= row < 8 and 0 <= col < 8 and currentBoard[row][col] != '_':
+                if currentBoard[row][col] == move:
+                    captured = True
+                    break
+                row += changeInI
+                col += changeInJ
+            if captured:
+                return True
+
+    return False
